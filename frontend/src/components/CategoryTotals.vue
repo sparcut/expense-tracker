@@ -27,21 +27,41 @@ function getBarColor(category: string) {
 <template>
   <div v-if="totals.length" class="mb-8">
     <h2 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">By Category</h2>
-    <div class="bg-card border border-border rounded-lg divide-y divide-border">
-      <div
-        v-for="{ category, total } in totals"
-        :key="category"
-        class="flex items-center gap-4 px-4 py-2.5"
-      >
-        <CategoryBadge :category="category" />
-        <div class="flex-1 h-1.5 bg-muted rounded-full overflow-hidden">
-          <div
-            class="h-full rounded-full transition-all duration-500"
-            :style="{ width: `${(total / grandTotal) * 100}%`, backgroundColor: getBarColor(category) }"
-          />
+    <div
+      class="bg-card border border-border rounded-lg overflow-hidden grid"
+      style="grid-template-columns: max-content 1fr auto auto"
+    >
+      <template v-for="({ category, total }, i) in totals" :key="category">
+        <div
+          class="pl-4 pr-3 py-2.5 flex items-center justify-end"
+          :class="{ 'border-b border-border': i < totals.length - 1 }"
+        >
+          <CategoryBadge :category="category" />
         </div>
-        <span class="text-sm font-medium tabular-nums shrink-0">${{ total.toFixed(2) }}</span>
-      </div>
+        <div
+          class="px-3 py-2.5 flex items-center"
+          :class="{ 'border-b border-border': i < totals.length - 1 }"
+        >
+          <div class="w-full h-1.5 bg-muted rounded-full overflow-hidden">
+            <div
+              class="h-full rounded-full transition-all duration-500"
+              :style="{ width: `${(total / grandTotal) * 100}%`, backgroundColor: getBarColor(category) }"
+            />
+          </div>
+        </div>
+        <div
+          class="pl-3 py-2.5 flex items-center justify-end"
+          :class="{ 'border-b border-border': i < totals.length - 1 }"
+        >
+          <span class="text-sm font-medium tabular-nums">${{ total.toFixed(2) }}</span>
+        </div>
+        <div
+          class="pl-2 pr-4 py-2.5 flex items-center justify-end"
+          :class="{ 'border-b border-border': i < totals.length - 1 }"
+        >
+          <span class="text-xs text-muted-foreground tabular-nums">{{ ((total / grandTotal) * 100).toFixed(0) }}%</span>
+        </div>
+      </template>
     </div>
   </div>
 </template>
