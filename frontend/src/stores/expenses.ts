@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { api } from '../api'
 import type { Expense, ExpenseFormData } from '../types/expense'
 
@@ -7,10 +7,6 @@ export const useExpenseStore = defineStore('expenses', () => {
   const expenses = ref<Expense[]>([])
   const loading = ref(false)
   const error = ref<string | null>(null)
-
-  const total = computed(() =>
-    expenses.value.reduce((sum, e) => sum + e.amount, 0)
-  )
 
   async function fetchExpenses(params?: Record<string, string>) {
     loading.value = true
@@ -25,15 +21,11 @@ export const useExpenseStore = defineStore('expenses', () => {
     }
   }
 
-  function sortByDate() {
-    expenses.value.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-  }
-
   async function createExpense(form: ExpenseFormData) {
     try {
       const { data } = await api.post<Expense>('/expenses', form)
       expenses.value.push(data)
-      sortByDate()
+      expenses.value.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       return data
     } catch {
       throw new Error('Failed to add expense. Please try again.')
@@ -45,7 +37,7 @@ export const useExpenseStore = defineStore('expenses', () => {
       const { data } = await api.put<Expense>(`/expenses/${id}`, form)
       const idx = expenses.value.findIndex((e) => e.id === id)
       if (idx !== -1) expenses.value[idx] = data
-      sortByDate()
+      expenses.value.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       return data
     } catch {
       throw new Error('Failed to update expense. Please try again.')
@@ -61,5 +53,5 @@ export const useExpenseStore = defineStore('expenses', () => {
     }
   }
 
-  return { expenses, loading, error, total, fetchExpenses, createExpense, updateExpense, deleteExpense }
+  return { expenses, loading, error, fetchExpenses, createExpense, updateExpense, deleteExpense }
 })

@@ -1,17 +1,9 @@
 <script setup lang="ts">
-import { reactive, computed } from 'vue'
+import { reactive } from 'vue'
 import { Loader2 } from 'lucide-vue-next'
 import { CATEGORIES, type ExpenseFormData } from '../types/expense'
 import AmountInput from './AmountInput.vue'
 import { nowLocal } from '../utils/date'
-
-interface FormState {
-  title: string
-  category: string
-  amount: number | ''
-  date: string
-  description: string
-}
 
 const props = withDefaults(defineProps<{
   initial?: Partial<ExpenseFormData>
@@ -22,14 +14,12 @@ const props = withDefaults(defineProps<{
   loading: false,
 })
 
-const isEditing = computed(() => props.mode === 'edit')
-
 const emit = defineEmits<{
   submit: [data: ExpenseFormData]
   cancel: []
 }>()
 
-const form = reactive<FormState>({
+const form = reactive({
   title: props.initial?.title ?? '',
   category: props.initial?.category ?? '',
   amount: props.initial?.amount ?? '',
@@ -113,7 +103,7 @@ const errorClass = 'text-destructive text-xs mt-1'
         class="flex items-center gap-2 px-4 py-2 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-opacity"
       >
         <Loader2 v-if="loading" :size="14" class="animate-spin" aria-hidden="true" />
-        {{ loading ? 'Saving...' : isEditing ? 'Save Changes' : 'Add Expense' }}
+        {{ loading ? 'Saving...' : props.mode === 'edit' ? 'Save Changes' : 'Add Expense' }}
       </button>
     </div>
   </form>

@@ -44,9 +44,9 @@ export async function getExpenses(req: Request, res: Response) {
     return res.status(400).json({ error: 'endDate is not a valid date' })
 
   try {
-    const where: Record<string, unknown> = {}
+    const where: Prisma.ExpenseWhereInput = {}
 
-    if (category) where.category = category
+    if (category) where.category = category as string
     if (startDate || endDate) {
       where.date = {
         ...(startDate ? { gte: new Date(startDate as string) } : {}),
@@ -83,7 +83,7 @@ export async function updateExpense(req: Request, res: Response) {
   try {
     const { title, category, amount, date, description } = req.body
     const expense = await prisma.expense.update({
-      where: { id: String(req.params.id) },
+      where: { id: req.params.id },
       data: { title: title.trim(), category, amount: parseFloat(amount), date: new Date(date), description: description?.trim() || null },
     })
     res.json(expense)
@@ -95,7 +95,7 @@ export async function updateExpense(req: Request, res: Response) {
 
 export async function deleteExpense(req: Request, res: Response) {
   try {
-    await prisma.expense.delete({ where: { id: String(req.params.id) } })
+    await prisma.expense.delete({ where: { id: req.params.id } })
     res.status(204).send()
   } catch (e) {
     if (isNotFound(e)) return res.status(404).json({ error: 'Expense not found' })
@@ -108,7 +108,6 @@ export async function getSummary(_req: Request, res: Response) {
     const byCategory = await prisma.expense.groupBy({
       by: ['category'],
       _sum: { amount: true },
-      _count: { id: true },
       orderBy: { _sum: { amount: 'desc' } },
     })
 

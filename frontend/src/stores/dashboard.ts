@@ -5,7 +5,6 @@ import { api } from '../api'
 interface CategorySummary {
   category: string
   _sum: { amount: number }
-  _count: { id: number }
 }
 
 interface MonthlySummary {
@@ -60,9 +59,5 @@ export const useDashboardStore = defineStore('dashboard', () => {
     return ((thisMonth.value - lastMonth.value) / lastMonth.value) * 100
   })
 
-  const topCategory = computed(() =>
-    byCategory.value[0]?.category ?? '—'
-  )
-
-  return { byCategory, monthly, avgPerDay, loading, error, fetchSummary, totalAllTime, thisMonth, lastMonth, momChange, topCategory }
+  return { byCategory, monthly, avgPerDay, loading, error, fetchSummary, totalAllTime, thisMonth, lastMonth, momChange }
 })
