@@ -15,9 +15,7 @@ use([CanvasRenderer, PieChart, TooltipComponent, LegendComponent, TitleComponent
 const props = defineProps<{ data: { category: string; _sum: { amount: number } }[] }>()
 const { isDark } = useTheme()
 
-const option = computed(() => {
-  const dark = isDark()
-  return {
+const option = computed(() => ({
   title: { text: 'By Category', textStyle: { fontSize: 13, fontWeight: 600 } },
   tooltip: { trigger: 'item', valueFormatter: (v: number) => formatCurrency(v) },
   legend: { orient: 'vertical', right: 0, top: 'middle', textStyle: { fontSize: 11 } },
@@ -33,8 +31,7 @@ const option = computed(() => {
     label: { show: false },
     emphasis: { focus: 'none', label: { show: true, fontSize: 12, fontWeight: 'bold' }, itemStyle: { opacity: 0.85 } },
   }],
-  }
-})
+}))
 </script>
 
 <template>

@@ -15,10 +15,8 @@ const props = defineProps<{ data: { month: string; total: number }[] }>()
 const { isDark } = useTheme()
 
 const option = computed(() => {
-  const dark = isDark()
-  const sorted = [...props.data].reverse()
   let running = 0
-  const cumulative = sorted.map(d => {
+  const cumulative = props.data.map(d => {
     running += d.total
     return parseFloat(running.toFixed(2))
   })
@@ -26,7 +24,7 @@ const option = computed(() => {
   return {
     title: { text: 'Cumulative Spend', textStyle: { fontSize: 13, fontWeight: 600 } },
     tooltip: { trigger: 'axis', valueFormatter: (v: number) => formatCurrency(v) },
-    xAxis: { type: 'category', data: sorted.map(d => d.month), axisLabel: { fontSize: 11 } },
+    xAxis: { type: 'category', data: props.data.map(d => d.month), axisLabel: { fontSize: 11 } },
     yAxis: { type: 'value', axisLabel: { formatter: (v: number) => `$${v}`, fontSize: 11 } },
     series: [{
       type: 'line',
