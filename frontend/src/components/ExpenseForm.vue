@@ -5,24 +5,34 @@ import { CATEGORIES, type ExpenseFormData } from '../types/expense'
 import AmountInput from './AmountInput.vue'
 import { nowLocal } from '../utils/date'
 
+interface FormState {
+  title: string
+  category: string
+  amount: number | ''
+  date: string
+  description: string
+}
+
 const props = withDefaults(defineProps<{
   initial?: Partial<ExpenseFormData>
+  mode?: 'add' | 'edit'
   loading?: boolean
 }>(), {
+  mode: 'add',
   loading: false,
 })
 
-const isEditing = computed(() => !!props.initial?.title)
+const isEditing = computed(() => props.mode === 'edit')
 
 const emit = defineEmits<{
   submit: [data: ExpenseFormData]
   cancel: []
 }>()
 
-const form = reactive<ExpenseFormData>({
+const form = reactive<FormState>({
   title: props.initial?.title ?? '',
   category: props.initial?.category ?? '',
-  amount: props.initial?.amount ?? ('' as unknown as number),
+  amount: props.initial?.amount ?? '',
   date: props.initial?.date ?? nowLocal(),
   description: props.initial?.description ?? '',
 })

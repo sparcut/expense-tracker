@@ -125,6 +125,7 @@ const grouped = computed(() => {
             <!-- Edit mode -->
             <div v-if="editingId === expense.id" class="flex-1 space-y-2">
               <ExpenseForm
+                mode="edit"
                 :initial="toFormData(expense)"
                 :loading="saving"
                 @submit="handleEdit(expense.id, $event)"
@@ -176,7 +177,7 @@ const grouped = computed(() => {
   <ConfirmModal
     v-if="pendingDelete"
     title="Delete expense"
-    :message="`Delete &quot;${pendingDelete.title}&quot;? This cannot be undone.`"
+    :message="`Delete '${pendingDelete.title}'? This cannot be undone.`"
     :loading="deleting"
     :error="deleteError"
     @confirm="confirmDelete"
