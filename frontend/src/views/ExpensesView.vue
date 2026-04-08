@@ -3,6 +3,7 @@ import { ref, onMounted } from 'vue'
 import { Plus } from 'lucide-vue-next'
 import { useExpenseStore } from '../stores/expenses'
 import ExpenseForm from '../components/ExpenseForm.vue'
+import CategoryBadge from '../components/CategoryBadge.vue'
 import type { ExpenseFormData } from '../types/expense'
 
 const store = useExpenseStore()
@@ -64,9 +65,10 @@ async function handleAdd(data: ExpenseFormData) {
       >
         <div>
           <p class="font-medium">{{ expense.title }}</p>
-          <p class="text-sm text-muted-foreground">
-            {{ expense.category }} · {{ new Date(expense.date).toLocaleDateString() }}
-          </p>
+          <div class="flex items-center gap-2 mt-1">
+            <CategoryBadge :category="expense.category" />
+            <span class="text-xs text-muted-foreground">{{ new Date(expense.date).toLocaleDateString() }}</span>
+          </div>
         </div>
         <span class="font-semibold">${{ expense.amount.toFixed(2) }}</span>
       </li>
