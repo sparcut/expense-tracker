@@ -1,9 +1,6 @@
 import { Request, Response } from 'express'
-import { PrismaClient, Prisma } from '@prisma/client'
-import { PrismaPg } from '@prisma/adapter-pg'
-
-const adapter = new PrismaPg({ connectionString: process.env['DATABASE_URL']! })
-const prisma = new PrismaClient({ adapter })
+import { Prisma } from '@prisma/client'
+import { prisma } from '../lib/prisma'
 
 const CATEGORIES = [
   'Food & Drink', 'Transport', 'Housing', 'Entertainment',
@@ -12,6 +9,10 @@ const CATEGORIES = [
 
 function isNotFound(e: unknown) {
   return e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025'
+}
+
+function isValidDate(value: unknown): value is string {
+  return typeof value === 'string' && !isNaN(new Date(value).getTime())
 }
 
 function validateExpenseBody(body: Record<string, unknown>): string[] {
@@ -35,8 +36,14 @@ function validateExpenseBody(body: Record<string, unknown>): string[] {
 }
 
 export async function getExpenses(req: Request, res: Response) {
+  const { category, startDate, endDate } = req.query
+
+  if (startDate && !isValidDate(startDate))
+    return res.status(400).json({ error: 'startDate is not a valid date' })
+  if (endDate && !isValidDate(endDate))
+    return res.status(400).json({ error: 'endDate is not a valid date' })
+
   try {
-    const { category, startDate, endDate } = req.query
     const where: Record<string, unknown> = {}
 
     if (category) where.category = category
@@ -51,16 +58,6 @@ export async function getExpenses(req: Request, res: Response) {
     res.json(expenses)
   } catch {
     res.status(500).json({ error: 'Failed to fetch expenses' })
-  }
-}
-
-export async function getExpenseById(req: Request, res: Response) {
-  try {
-    const expense = await prisma.expense.findUnique({ where: { id: String(req.params.id) } })
-    if (!expense) return res.status(404).json({ error: 'Expense not found' })
-    res.json(expense)
-  } catch {
-    res.status(500).json({ error: 'Failed to fetch expense' })
   }
 }
 
@@ -119,21 +116,10 @@ export async function getSummary(_req: Request, res: Response) {
       SELECT to_char(date, 'YYYY-MM') as month, SUM(amount)::float as total
       FROM "Expense"
       GROUP BY month
-      ORDER BY month DESC
-      LIMIT 12
+      ORDER BY month ASC
     `
 
-    const daysElapsed = new Date().getDate()
-
-    const [thisMonthRow] = await prisma.$queryRaw<{ total: number }[]>`
-      SELECT COALESCE(SUM(amount), 0)::float as total
-      FROM "Expense"
-      WHERE to_char(date, 'YYYY-MM') = to_char(NOW(), 'YYYY-MM')
-    `
-
-    const avgPerDay = parseFloat((thisMonthRow.total / daysElapsed).toFixed(2))
-
-    res.json({ byCategory, monthly, avgPerDay })
+    res.json({ byCategory, monthly })
   } catch (e) {
     console.error('getSummary error:', e)
     res.status(500).json({ error: 'Failed to fetch summary' })
