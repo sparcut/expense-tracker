@@ -6,17 +6,12 @@ import { CanvasRenderer } from 'echarts/renderers'
 import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, TitleComponent } from 'echarts/components'
 import { useTheme } from '../../composables/useTheme'
+import { resolveColor } from '../../utils/color'
 
 use([CanvasRenderer, BarChart, GridComponent, TooltipComponent, TitleComponent])
 
 const props = defineProps<{ data: { month: string; total: number }[] }>()
 const { isDark } = useTheme()
-
-function resolveColor(cssVar: string): string {
-  const match = cssVar.match(/var\((--[\w-]+)\)/)
-  if (!match) return cssVar
-  return getComputedStyle(document.documentElement).getPropertyValue(match[1]).trim()
-}
 
 const option = computed(() => ({
   title: { text: 'Monthly Spend', textStyle: { fontSize: 13, fontWeight: 600 } },

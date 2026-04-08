@@ -7,17 +7,12 @@ import { PieChart } from 'echarts/charts'
 import { TooltipComponent, LegendComponent, TitleComponent } from 'echarts/components'
 import { useTheme } from '../../composables/useTheme'
 import { getCategoryColor } from '../../types/categories'
+import { resolveColor } from '../../utils/color'
 
 use([CanvasRenderer, PieChart, TooltipComponent, LegendComponent, TitleComponent])
 
 const props = defineProps<{ data: { category: string; _sum: { amount: number } }[] }>()
 const { isDark } = useTheme()
-
-function resolveColor(cssVar: string): string {
-  const match = cssVar.match(/var\((--[\w-]+)\)/)
-  if (!match) return cssVar
-  return getComputedStyle(document.documentElement).getPropertyValue(match[1]).trim()
-}
 
 const option = computed(() => ({
   title: { text: 'By Category', textStyle: { fontSize: 13, fontWeight: 600 } },

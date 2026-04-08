@@ -6,6 +6,7 @@ import CategoryBadge from './CategoryBadge.vue'
 import ConfirmModal from './ConfirmModal.vue'
 import ExpenseForm from './ExpenseForm.vue'
 import { useExpenseStore } from '../stores/expenses'
+import { toLocalDatetime } from '../utils/date'
 
 const props = defineProps<{ expenses: Expense[] }>()
 
@@ -34,12 +35,6 @@ async function handleEdit(id: string, data: ExpenseFormData) {
   } finally {
     saving.value = false
   }
-}
-
-function toLocalDatetime(date: string) {
-  const d = new Date(date)
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset())
-  return d.toISOString().slice(0, 16)
 }
 
 function toFormData(expense: Expense): ExpenseFormData {

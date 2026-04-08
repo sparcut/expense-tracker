@@ -2,6 +2,7 @@
 import { reactive, computed } from 'vue'
 import { CATEGORIES, type ExpenseFormData } from '../types/expense'
 import AmountInput from './AmountInput.vue'
+import { nowLocal } from '../utils/date'
 
 const props = withDefaults(defineProps<{
   initial?: Partial<ExpenseFormData>
@@ -16,12 +17,6 @@ const emit = defineEmits<{
   submit: [data: ExpenseFormData]
   cancel: []
 }>()
-
-function nowLocal() {
-  const now = new Date()
-  now.setMinutes(now.getMinutes() - now.getTimezoneOffset())
-  return now.toISOString().slice(0, 16)
-}
 
 const form = reactive<ExpenseFormData>({
   title: props.initial?.title ?? '',
