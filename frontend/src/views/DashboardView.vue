@@ -22,6 +22,13 @@ function fmt(n: number) {
     <p v-if="store.loading" class="text-muted-foreground">Loading...</p>
     <p v-else-if="store.error" class="text-destructive">{{ store.error }}</p>
 
+    <template v-else-if="!store.byCategory.length && !store.monthly.length">
+      <div class="flex flex-col items-center justify-center py-24 text-center">
+        <p class="text-lg font-medium mb-1">No data yet</p>
+        <p class="text-sm text-muted-foreground">Add some expenses to see your dashboard.</p>
+      </div>
+    </template>
+
     <template v-else>
       <!-- Stat cards -->
       <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
@@ -39,15 +46,15 @@ function fmt(n: number) {
 
       <!-- Charts -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
-        <div class="bg-card border border-border rounded-lg p-4">
+        <div v-if="store.monthly.length" class="bg-card border border-border rounded-lg p-4">
           <BarChart :data="store.monthly" />
         </div>
-        <div class="bg-card border border-border rounded-lg p-4">
+        <div v-if="store.byCategory.length" class="bg-card border border-border rounded-lg p-4">
           <DoughnutChart :data="store.byCategory" />
         </div>
       </div>
 
-      <div class="bg-card border border-border rounded-lg p-4">
+      <div v-if="store.monthly.length" class="bg-card border border-border rounded-lg p-4">
         <LineChart :data="store.monthly" />
       </div>
     </template>
