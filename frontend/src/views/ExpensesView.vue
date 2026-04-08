@@ -32,8 +32,8 @@ async function handleAdd(data: ExpenseFormData) {
 <template>
   <div>
     <!-- Header -->
-    <div class="flex items-center justify-between mb-6">
-      <h1 class="text-2xl font-semibold">Expenses</h1>
+    <div class="flex flex-wrap items-center gap-2 mb-6">
+      <h1 class="text-2xl font-semibold flex-1">Expenses</h1>
       <div class="flex items-center gap-2">
         <button
           @click="filterOpen = !filterOpen"
@@ -59,7 +59,8 @@ async function handleAdd(data: ExpenseFormData) {
           class="flex items-center gap-2 px-4 py-2 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 transition-opacity"
         >
           <Plus :size="16" />
-          Add Expense
+          <span class="hidden sm:inline">Add Expense</span>
+          <span class="sm:hidden">Add</span>
         </button>
       </div>
     </div>

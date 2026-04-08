@@ -7,14 +7,14 @@ const route = useRoute()
 </script>
 
 <template>
-  <div class="min-h-screen bg-background text-foreground transition-colors">
-    <nav class="bg-nav border-b border-nav-border px-6 py-4 flex items-center gap-6">
-      <div class="flex items-center gap-2">
+  <div class="min-h-screen bg-background text-foreground transition-colors overflow-x-hidden">
+    <nav class="bg-nav border-b border-nav-border px-4 sm:px-6 py-4 flex items-center gap-4 sm:gap-6">
+      <div class="flex items-center gap-2 shrink-0">
         <Wallet :size="20" class="text-primary" />
         <span class="font-semibold text-lg">Expense Tracker</span>
       </div>
 
-      <div class="flex items-center gap-6 flex-1">
+      <div class="flex items-center gap-4 sm:gap-6 flex-1">
         <RouterLink
           to="/expenses"
           class="text-sm font-medium transition-colors"
@@ -38,7 +38,7 @@ const route = useRoute()
       <ThemeToggle />
     </nav>
 
-    <main class="max-w-5xl mx-auto px-6 py-8">
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <RouterView v-slot="{ Component }">
         <Transition
           enter-active-class="transition-all duration-200 ease-out"

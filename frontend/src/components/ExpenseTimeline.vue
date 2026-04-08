@@ -136,7 +136,7 @@ const grouped = computed(() => {
 
               <div class="flex items-center gap-3 shrink-0">
                 <span class="font-semibold text-sm">${{ expense.amount.toFixed(2) }}</span>
-                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <button
                     @click="editingId = expense.id"
                     class="p-1 rounded text-muted-foreground hover:text-primary transition-colors"
