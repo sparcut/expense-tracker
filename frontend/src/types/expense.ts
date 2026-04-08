@@ -11,15 +11,5 @@ export interface Expense {
 
 export type ExpenseFormData = Omit<Expense, 'id' | 'createdAt' | 'updatedAt'>
 
-export const CATEGORIES = [
-  'Food & Drink',
-  'Transport',
-  'Housing',
-  'Entertainment',
-  'Health',
-  'Shopping',
-  'Education',
-  'Other',
-] as const
-
-export type Category = (typeof CATEGORIES)[number]
+export type { Category } from './categories'
+export { CATEGORIES } from './categories'
