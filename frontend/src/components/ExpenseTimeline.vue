@@ -133,14 +133,17 @@ const grouped = computed(() => {
             </div>
 
             <!-- Display mode -->
-            <div v-else class="flex-1 bg-card border border-border rounded-lg px-4 py-3 flex items-center justify-between gap-4">
+            <div
+              v-else
+              class="flex-1 bg-card border border-border rounded-lg px-4 py-3 flex items-center justify-between gap-4"
+            >
               <div class="min-w-0">
                 <p class="font-medium text-sm truncate">{{ expense.title }}</p>
                 <div class="flex items-center gap-2 mt-1">
                   <CategoryBadge :category="expense.category" />
                   <span class="text-xs text-muted-foreground">{{ formatTime(expense.date) }}</span>
                 </div>
-                <p v-if="expense.description" class="text-xs text-muted-foreground mt-1 truncate">{{ expense.description }}</p>
+                <p v-if="expense.description" class="text-xs text-muted-foreground mt-1">{{ expense.description }}</p>
               </div>
 
               <div class="flex items-center gap-3 shrink-0">

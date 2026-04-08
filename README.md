@@ -53,7 +53,15 @@ npm run db:migrate    # run migrations
 npm run db:generate   # generate Prisma client
 ```
 
-### 4. Run the app
+### 4. Seed development data (optional)
+
+Loads 45 sample expenses across Jan–Apr 2026:
+
+```bash
+"psql" %DATABASE_URL% -f backend/prisma/seed.sql
+```
+
+### 5. Run the app
 
 Open two terminals:
 
