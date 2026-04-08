@@ -4,6 +4,7 @@ import { Plus } from 'lucide-vue-next'
 import { useExpenseStore } from '../stores/expenses'
 import ExpenseForm from '../components/ExpenseForm.vue'
 import CategoryBadge from '../components/CategoryBadge.vue'
+import RecentExpenses from '../components/RecentExpenses.vue'
 import type { ExpenseFormData } from '../types/expense'
 
 const store = useExpenseStore()
@@ -50,6 +51,12 @@ async function handleAdd(data: ExpenseFormData) {
         <ExpenseForm :loading="saving" @submit="handleAdd" @cancel="showForm = false" />
       </div>
     </Transition>
+
+    <!-- Recent cards -->
+    <RecentExpenses />
+
+    <!-- All expenses heading -->
+    <h2 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">All Expenses</h2>
 
     <!-- States -->
     <p v-if="store.loading" class="text-muted-foreground">Loading...</p>
