@@ -8,11 +8,11 @@ export const useExpenseStore = defineStore('expenses', () => {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  async function fetchExpenses(params?: Record<string, string>) {
+  async function fetchExpenses() {
     loading.value = true
     error.value = null
     try {
-      const { data } = await api.get<Expense[]>('/expenses', { params })
+      const { data } = await api.get<Expense[]>('/expenses')
       expenses.value = data
     } catch (e) {
       error.value = 'Failed to load expenses'
