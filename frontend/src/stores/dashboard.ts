@@ -1,8 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import axios from 'axios'
-
-const api = axios.create({ baseURL: '/api' })
+import { api } from '../api'
 
 interface CategorySummary {
   category: string
@@ -18,7 +16,6 @@ interface MonthlySummary {
 export const useDashboardStore = defineStore('dashboard', () => {
   const byCategory = ref<CategorySummary[]>([])
   const monthly = ref<MonthlySummary[]>([])
-  const avgPerDay = ref(0)
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -29,7 +26,6 @@ export const useDashboardStore = defineStore('dashboard', () => {
       const { data } = await api.get('/expenses/summary')
       byCategory.value = data.byCategory
       monthly.value = data.monthly
-      avgPerDay.value = data.avgPerDay ?? 0
     } catch {
       error.value = 'Failed to load summary'
     } finally {
@@ -51,6 +47,12 @@ export const useDashboardStore = defineStore('dashboard', () => {
     d.setMonth(d.getMonth() - 1)
     const key = d.toISOString().slice(0, 7)
     return monthly.value.find(m => m.month === key)?.total ?? 0
+  })
+
+  // Computed client-side using the user's local date, avoiding server timezone mismatch.
+  const avgPerDay = computed(() => {
+    const days = new Date().getDate()
+    return parseFloat((thisMonth.value / days).toFixed(2))
   })
 
   const momChange = computed(() => {
