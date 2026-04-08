@@ -24,7 +24,7 @@ const option = computed(() => {
   return {
     title: { text: 'Cumulative Spend', textStyle: { fontSize: 13, fontWeight: 600 } },
     tooltip: { trigger: 'axis', valueFormatter: (v: number) => formatCurrency(v) },
-    xAxis: { type: 'category', data: props.data.map(d => d.month), axisLabel: { fontSize: 11 } },
+    xAxis: { type: 'category', data: props.data.map(d => d.month), axisLabel: { fontSize: 11, overflow: 'truncate', width: 60 } },
     yAxis: { type: 'value', axisLabel: { formatter: (v: number) => `$${v}`, fontSize: 11 } },
     series: [{
       type: 'line',

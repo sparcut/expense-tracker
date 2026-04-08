@@ -16,13 +16,20 @@ const props = defineProps<{ data: { category: string; _sum: { amount: number } }
 const { isDark } = useTheme()
 
 const option = computed(() => ({
-  title: { text: 'By Category', textStyle: { fontSize: 13, fontWeight: 600 } },
+  title: { text: 'By Category', textStyle: { fontSize: 13, fontWeight: 600 }, top: 0 },
   tooltip: { trigger: 'item', valueFormatter: (v: number) => formatCurrency(v) },
-  legend: { orient: 'vertical', right: 0, top: 'middle', textStyle: { fontSize: 11 } },
+  legend: {
+    orient: 'horizontal',
+    bottom: 0,
+    type: 'scroll',
+    textStyle: { fontSize: 11 },
+    formatter: (name: string) => name.length > 18 ? name.slice(0, 16) + '…' : name,
+    tooltip: { show: true },
+  },
   series: [{
     type: 'pie',
     radius: ['40%', '70%'],
-    center: ['40%', '55%'],
+    center: ['50%', '52%'],
     data: props.data.map(d => ({
       name: d.category,
       value: d._sum.amount ?? 0,

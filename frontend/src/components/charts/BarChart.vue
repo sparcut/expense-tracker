@@ -20,7 +20,7 @@ const option = computed(() => ({
   xAxis: {
     type: 'category',
     data: props.data.map(d => d.month),
-    axisLabel: { fontSize: 11 },
+    axisLabel: { fontSize: 11, overflow: 'truncate', width: 60 },
   },
   yAxis: { type: 'value', axisLabel: { formatter: (v: number) => `$${v}`, fontSize: 11 } },
   series: [{
