@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { Plus } from 'lucide-vue-next'
+import { Plus, SlidersHorizontal, X } from 'lucide-vue-next'
 import { useExpenseStore } from '../stores/expenses'
 import { useExpenseFilters } from '../composables/useExpenseFilters'
 import ExpenseForm from '../components/ExpenseForm.vue'
 import ExpenseFilters from '../components/ExpenseFilters.vue'
-import { SlidersHorizontal, X } from 'lucide-vue-next'
 import RecentExpenses from '../components/RecentExpenses.vue'
 import ExpenseTimeline from '../components/ExpenseTimeline.vue'
 import type { ExpenseFormData } from '../types/expense'
