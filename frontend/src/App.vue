@@ -41,15 +41,13 @@ const route = useRoute()
     <main class="max-w-5xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
       <RouterView v-slot="{ Component }">
         <Transition
-          enter-active-class="transition-all duration-200 ease-out"
+          enter-active-class="transition-all duration-100 ease-out"
           enter-from-class="opacity-0 translate-y-1"
           enter-to-class="opacity-100 translate-y-0"
-          leave-active-class="transition-all duration-150 ease-in"
-          leave-from-class="opacity-100 translate-y-0"
-          leave-to-class="opacity-0 translate-y-1"
-          mode="out-in"
         >
-          <component :is="Component" />
+          <KeepAlive>
+            <component :is="Component" />
+          </KeepAlive>
         </Transition>
       </RouterView>
     </main>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onActivated } from 'vue'
 import { useDashboardStore } from '../stores/dashboard'
 import { formatCurrency } from '../utils/currency'
 import StatCard from '../components/StatCard.vue'
@@ -9,7 +9,9 @@ import LineChart from '../components/charts/LineChart.vue'
 
 const store = useDashboardStore()
 
-onMounted(() => store.fetchSummary())
+// onActivated fires on first mount and on every return navigation (KeepAlive).
+// Dashboard always refreshes since expenses may have changed on the other tab.
+onActivated(() => store.fetchSummary())
 
 const fmt = formatCurrency
 </script>
