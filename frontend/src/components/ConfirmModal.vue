@@ -4,6 +4,7 @@ defineProps<{
   message: string
   confirmLabel?: string
   loading?: boolean
+  error?: string
 }>()
 
 const emit = defineEmits<{ confirm: []; cancel: [] }>()
@@ -21,7 +22,8 @@ const emit = defineEmits<{ confirm: []; cancel: [] }>()
       <!-- Dialog -->
       <div class="relative z-10 w-full max-w-sm bg-card border border-border rounded-xl shadow-xl p-6">
         <h3 class="text-base font-semibold mb-2">{{ title }}</h3>
-        <p class="text-sm text-muted-foreground mb-6">{{ message }}</p>
+        <p class="text-sm text-muted-foreground mb-4">{{ message }}</p>
+        <p v-if="error" class="text-sm text-destructive mb-4">{{ error }}</p>
 
         <div class="flex justify-end gap-2">
           <button

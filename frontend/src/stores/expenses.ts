@@ -32,23 +32,35 @@ export const useExpenseStore = defineStore('expenses', () => {
   }
 
   async function createExpense(form: ExpenseFormData) {
-    const { data } = await api.post<Expense>('/expenses', form)
-    expenses.value.push(data)
-    sortByDate()
-    return data
+    try {
+      const { data } = await api.post<Expense>('/expenses', form)
+      expenses.value.push(data)
+      sortByDate()
+      return data
+    } catch {
+      throw new Error('Failed to add expense. Please try again.')
+    }
   }
 
   async function updateExpense(id: string, form: ExpenseFormData) {
-    const { data } = await api.put<Expense>(`/expenses/${id}`, form)
-    const idx = expenses.value.findIndex((e) => e.id === id)
-    if (idx !== -1) expenses.value[idx] = data
-    sortByDate()
-    return data
+    try {
+      const { data } = await api.put<Expense>(`/expenses/${id}`, form)
+      const idx = expenses.value.findIndex((e) => e.id === id)
+      if (idx !== -1) expenses.value[idx] = data
+      sortByDate()
+      return data
+    } catch {
+      throw new Error('Failed to update expense. Please try again.')
+    }
   }
 
   async function deleteExpense(id: string) {
-    await api.delete(`/expenses/${id}`)
-    expenses.value = expenses.value.filter((e) => e.id !== id)
+    try {
+      await api.delete(`/expenses/${id}`)
+      expenses.value = expenses.value.filter((e) => e.id !== id)
+    } catch {
+      throw new Error('Failed to delete expense. Please try again.')
+    }
   }
 
   return { expenses, loading, error, total, fetchExpenses, createExpense, updateExpense, deleteExpense }

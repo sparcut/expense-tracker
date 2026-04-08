@@ -12,6 +12,7 @@ import type { ExpenseFormData } from '../types/expense'
 const store = useExpenseStore()
 const showForm = ref(false)
 const saving = ref(false)
+const addError = ref('')
 
 const filters = useExpenseFilters(() => store.expenses)
 const filterOpen = ref(false)
@@ -20,9 +21,12 @@ onMounted(() => store.fetchExpenses())
 
 async function handleAdd(data: ExpenseFormData) {
   saving.value = true
+  addError.value = ''
   try {
     await store.createExpense(data)
     showForm.value = false
+  } catch (e) {
+    addError.value = (e as Error).message
   } finally {
     saving.value = false
   }
@@ -95,8 +99,9 @@ async function handleAdd(data: ExpenseFormData) {
       leave-from-class="opacity-100 translate-y-0"
       leave-to-class="opacity-0 -translate-y-2"
     >
-      <div v-if="showForm" class="mb-6">
+      <div v-if="showForm" class="mb-6 space-y-2">
         <ExpenseForm :loading="saving" @submit="handleAdd" @cancel="showForm = false" />
+        <p v-if="addError" class="text-sm text-destructive px-1">{{ addError }}</p>
       </div>
     </Transition>
 

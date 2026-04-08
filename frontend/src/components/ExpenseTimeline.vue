@@ -13,15 +13,20 @@ const props = defineProps<{ expenses: Expense[] }>()
 const store = useExpenseStore()
 const pendingDelete = ref<Expense | null>(null)
 const deleting = ref(false)
+const deleteError = ref('')
 const editingId = ref<string | null>(null)
 const saving = ref(false)
+const editError = ref('')
 
 async function confirmDelete() {
   if (!pendingDelete.value) return
   deleting.value = true
+  deleteError.value = ''
   try {
     await store.deleteExpense(pendingDelete.value.id)
     pendingDelete.value = null
+  } catch (e) {
+    deleteError.value = (e as Error).message
   } finally {
     deleting.value = false
   }
@@ -29,9 +34,12 @@ async function confirmDelete() {
 
 async function handleEdit(id: string, data: ExpenseFormData) {
   saving.value = true
+  editError.value = ''
   try {
     await store.updateExpense(id, data)
     editingId.value = null
+  } catch (e) {
+    editError.value = (e as Error).message
   } finally {
     saving.value = false
   }
@@ -110,13 +118,14 @@ const grouped = computed(() => {
             <div class="absolute left-[7px] top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-primary bg-background shrink-0" />
 
             <!-- Edit mode -->
-            <div v-if="editingId === expense.id" class="flex-1">
+            <div v-if="editingId === expense.id" class="flex-1 space-y-2">
               <ExpenseForm
                 :initial="toFormData(expense)"
                 :loading="saving"
                 @submit="handleEdit(expense.id, $event)"
                 @cancel="editingId = null"
               />
+              <p v-if="editError" class="text-sm text-destructive px-1">{{ editError }}</p>
             </div>
 
             <!-- Display mode -->
@@ -160,7 +169,8 @@ const grouped = computed(() => {
     title="Delete expense"
     :message="`Delete &quot;${pendingDelete.title}&quot;? This cannot be undone.`"
     :loading="deleting"
+    :error="deleteError"
     @confirm="confirmDelete"
-    @cancel="pendingDelete = null"
+    @cancel="pendingDelete = null; deleteError = ''"
   />
 </template>
