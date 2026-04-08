@@ -30,7 +30,7 @@ const fmt = formatCurrency
 
     <template v-else>
       <!-- Stat cards -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
         <StatCard label="All Time" :value="fmt(store.totalAllTime)" />
         <StatCard label="This Month" :value="fmt(store.thisMonth)" />
         <StatCard
@@ -39,8 +39,7 @@ const fmt = formatCurrency
           :trend="store.momChange"
           sub="vs last month"
         />
-        <StatCard label="Top Category" :value="store.topCategory" />
-        <StatCard label="Categories" :value="String(store.byCategory.length)" />
+        <StatCard label="Avg / Day" :value="fmt(store.avgPerDay)" sub="this month" />
       </div>
 
       <!-- Charts -->

@@ -18,6 +18,7 @@ interface MonthlySummary {
 export const useDashboardStore = defineStore('dashboard', () => {
   const byCategory = ref<CategorySummary[]>([])
   const monthly = ref<MonthlySummary[]>([])
+  const avgPerDay = ref(0)
   const loading = ref(false)
   const error = ref<string | null>(null)
 
@@ -28,6 +29,7 @@ export const useDashboardStore = defineStore('dashboard', () => {
       const { data } = await api.get('/expenses/summary')
       byCategory.value = data.byCategory
       monthly.value = data.monthly
+      avgPerDay.value = data.avgPerDay ?? 0
     } catch {
       error.value = 'Failed to load summary'
     } finally {
@@ -60,5 +62,5 @@ export const useDashboardStore = defineStore('dashboard', () => {
     byCategory.value[0]?.category ?? '—'
   )
 
-  return { byCategory, monthly, loading, error, fetchSummary, totalAllTime, thisMonth, lastMonth, momChange, topCategory }
+  return { byCategory, monthly, avgPerDay, loading, error, fetchSummary, totalAllTime, thisMonth, lastMonth, momChange, topCategory }
 })

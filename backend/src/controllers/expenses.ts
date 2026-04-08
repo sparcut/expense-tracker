@@ -123,8 +123,19 @@ export async function getSummary(_req: Request, res: Response) {
       LIMIT 12
     `
 
-    res.json({ byCategory, monthly })
-  } catch {
+    const daysElapsed = new Date().getDate()
+
+    const [thisMonthRow] = await prisma.$queryRaw<{ total: number }[]>`
+      SELECT COALESCE(SUM(amount), 0)::float as total
+      FROM "Expense"
+      WHERE to_char(date, 'YYYY-MM') = to_char(NOW(), 'YYYY-MM')
+    `
+
+    const avgPerDay = parseFloat((thisMonthRow.total / daysElapsed).toFixed(2))
+
+    res.json({ byCategory, monthly, avgPerDay })
+  } catch (e) {
+    console.error('getSummary error:', e)
     res.status(500).json({ error: 'Failed to fetch summary' })
   }
 }
