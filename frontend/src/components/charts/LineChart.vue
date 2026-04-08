@@ -7,6 +7,7 @@ import { LineChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, TitleComponent } from 'echarts/components'
 import { useTheme } from '../../composables/useTheme'
 import { resolveColor } from '../../utils/color'
+import { formatCurrency } from '../../utils/currency'
 
 use([CanvasRenderer, LineChart, GridComponent, TooltipComponent, TitleComponent])
 
@@ -24,7 +25,7 @@ const option = computed(() => {
 
   return {
     title: { text: 'Cumulative Spend', textStyle: { fontSize: 13, fontWeight: 600 } },
-    tooltip: { trigger: 'axis', valueFormatter: (v: number) => `$${v.toFixed(2)}` },
+    tooltip: { trigger: 'axis', valueFormatter: (v: number) => formatCurrency(v) },
     xAxis: { type: 'category', data: sorted.map(d => d.month), axisLabel: { fontSize: 11 } },
     yAxis: { type: 'value', axisLabel: { formatter: (v: number) => `$${v}`, fontSize: 11 } },
     series: [{

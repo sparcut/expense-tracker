@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted } from 'vue'
 import { useDashboardStore } from '../stores/dashboard'
+import { formatCurrency } from '../utils/currency'
 import StatCard from '../components/StatCard.vue'
 import BarChart from '../components/charts/BarChart.vue'
 import DoughnutChart from '../components/charts/DoughnutChart.vue'
@@ -10,9 +11,7 @@ const store = useDashboardStore()
 
 onMounted(() => store.fetchSummary())
 
-function fmt(n: number) {
-  return `$${n.toLocaleString('en-AU', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
-}
+const fmt = formatCurrency
 </script>
 
 <template>

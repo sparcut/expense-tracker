@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import type { Expense } from '../types/expense'
 import CategoryBadge from './CategoryBadge.vue'
 import { getCategoryColor } from '../types/categories'
+import { formatCurrency } from '../utils/currency'
 
 const props = defineProps<{ expenses: Expense[] }>()
 
@@ -53,7 +54,7 @@ function getBarColor(category: string) {
           class="pl-3 py-2.5 flex items-center justify-end"
           :class="{ 'border-b border-border': i < totals.length - 1 }"
         >
-          <span class="text-sm font-medium tabular-nums">${{ total.toFixed(2) }}</span>
+          <span class="text-sm font-medium tabular-nums">{{ formatCurrency(total) }}</span>
         </div>
         <div
           class="pl-2 pr-4 py-2.5 flex items-center justify-end"

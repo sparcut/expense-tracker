@@ -7,6 +7,7 @@ import ConfirmModal from './ConfirmModal.vue'
 import ExpenseForm from './ExpenseForm.vue'
 import { useExpenseStore } from '../stores/expenses'
 import { toLocalDatetime } from '../utils/date'
+import { formatCurrency } from '../utils/currency'
 
 const props = defineProps<{ expenses: Expense[] }>()
 
@@ -104,7 +105,7 @@ const grouped = computed(() => {
           <span class="text-sm font-semibold">{{ group.label }}</span>
           <span class="text-xs text-muted-foreground">{{ group.items.length }} {{ group.items.length === 1 ? 'expense' : 'expenses' }}</span>
         </div>
-        <span class="text-sm text-muted-foreground">${{ group.total.toFixed(2) }}</span>
+        <span class="text-sm text-muted-foreground">{{ formatCurrency(group.total) }}</span>
       </div>
 
       <!-- Timeline entries -->
@@ -147,7 +148,7 @@ const grouped = computed(() => {
               </div>
 
               <div class="flex items-center gap-3 shrink-0">
-                <span class="font-semibold text-sm">${{ expense.amount.toFixed(2) }}</span>
+                <span class="font-semibold text-sm">{{ formatCurrency(expense.amount) }}</span>
                 <div class="flex items-center gap-1 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
                   <button
                     @click="editingId = expense.id"

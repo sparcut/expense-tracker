@@ -7,6 +7,7 @@ import { BarChart } from 'echarts/charts'
 import { GridComponent, TooltipComponent, TitleComponent } from 'echarts/components'
 import { useTheme } from '../../composables/useTheme'
 import { resolveColor } from '../../utils/color'
+import { formatCurrency } from '../../utils/currency'
 
 use([CanvasRenderer, BarChart, GridComponent, TooltipComponent, TitleComponent])
 
@@ -17,7 +18,7 @@ const option = computed(() => {
   const dark = isDark()
   return {
   title: { text: 'Monthly Spend', textStyle: { fontSize: 13, fontWeight: 600 } },
-  tooltip: { trigger: 'axis', valueFormatter: (v: number) => `$${v.toFixed(2)}` },
+  tooltip: { trigger: 'axis', valueFormatter: (v: number) => formatCurrency(v) },
   xAxis: {
     type: 'category',
     data: [...props.data].reverse().map(d => d.month),

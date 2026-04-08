@@ -8,6 +8,7 @@ import { TooltipComponent, LegendComponent, TitleComponent } from 'echarts/compo
 import { useTheme } from '../../composables/useTheme'
 import { getCategoryColor } from '../../types/categories'
 import { resolveColor } from '../../utils/color'
+import { formatCurrency } from '../../utils/currency'
 
 use([CanvasRenderer, PieChart, TooltipComponent, LegendComponent, TitleComponent])
 
@@ -18,7 +19,7 @@ const option = computed(() => {
   const dark = isDark()
   return {
   title: { text: 'By Category', textStyle: { fontSize: 13, fontWeight: 600 } },
-  tooltip: { trigger: 'item', valueFormatter: (v: number) => `$${v.toFixed(2)}` },
+  tooltip: { trigger: 'item', valueFormatter: (v: number) => formatCurrency(v) },
   legend: { orient: 'vertical', right: 0, top: 'middle', textStyle: { fontSize: 11 } },
   series: [{
     type: 'pie',

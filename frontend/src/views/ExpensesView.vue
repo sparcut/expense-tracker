@@ -8,6 +8,7 @@ import ExpenseFilters from '../components/ExpenseFilters.vue'
 import CategoryTotals from '../components/CategoryTotals.vue'
 import ExpenseTimeline from '../components/ExpenseTimeline.vue'
 import type { ExpenseFormData } from '../types/expense'
+import { formatCurrency } from '../utils/currency'
 
 const store = useExpenseStore()
 const showForm = ref(false)
@@ -113,7 +114,10 @@ async function handleAdd(data: ExpenseFormData) {
       <CategoryTotals :expenses="filters.filtered.value" />
 
       <!-- All expenses heading -->
-      <h2 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider mb-3">All Expenses</h2>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-muted-foreground uppercase tracking-wider">All Expenses</h2>
+        <span class="text-sm font-semibold">{{ formatCurrency(filters.filtered.value.reduce((sum, e) => sum + e.amount, 0)) }}</span>
+      </div>
 
       <p v-if="!filters.filtered.value.length" class="text-muted-foreground">
         {{ filters.isFiltered.value ? 'No expenses match your filters.' : 'No expenses yet.' }}
