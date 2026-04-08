@@ -92,3 +92,4 @@ Backend: http://localhost:3000
 | `npm run db:migrate` | Run database migrations |
 | `npm run db:generate` | Generate Prisma client |
 | `npm run db:studio` | Open Prisma Studio |
+| `npm run db:export` | Export database to `exports/expense_tracker.sql` |

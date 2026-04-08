@@ -23,6 +23,9 @@ pnpm-debug.log*
 # Prisma
 backend/prisma/migrations/
 
+# DB exports (submit manually with assignment)
+backend/exports/
+
 # Editor
 .vscode/
 .idea/
