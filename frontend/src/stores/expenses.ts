@@ -1,0 +1,49 @@
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+import axios from 'axios'
+import type { Expense, ExpenseFormData } from '../types/expense'
+
+const api = axios.create({ baseURL: '/api' })
+
+export const useExpenseStore = defineStore('expenses', () => {
+  const expenses = ref<Expense[]>([])
+  const loading = ref(false)
+  const error = ref<string | null>(null)
+
+  const total = computed(() =>
+    expenses.value.reduce((sum, e) => sum + e.amount, 0)
+  )
+
+  async function fetchExpenses(params?: Record<string, string>) {
+    loading.value = true
+    error.value = null
+    try {
+      const { data } = await api.get<Expense[]>('/expenses', { params })
+      expenses.value = data
+    } catch (e) {
+      error.value = 'Failed to load expenses'
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function createExpense(form: ExpenseFormData) {
+    const { data } = await api.post<Expense>('/expenses', form)
+    expenses.value.unshift(data)
+    return data
+  }
+
+  async function updateExpense(id: string, form: ExpenseFormData) {
+    const { data } = await api.put<Expense>(`/expenses/${id}`, form)
+    const idx = expenses.value.findIndex((e) => e.id === id)
+    if (idx !== -1) expenses.value[idx] = data
+    return data
+  }
+
+  async function deleteExpense(id: string) {
+    await api.delete(`/expenses/${id}`)
+    expenses.value = expenses.value.filter((e) => e.id !== id)
+  }
+
+  return { expenses, loading, error, total, fetchExpenses, createExpense, updateExpense, deleteExpense }
+})
