@@ -12,6 +12,12 @@ use([CanvasRenderer, LineChart, GridComponent, TooltipComponent, TitleComponent]
 const props = defineProps<{ data: { month: string; total: number }[] }>()
 const { isDark } = useTheme()
 
+function resolveColor(cssVar: string): string {
+  const match = cssVar.match(/var\((--[\w-]+)\)/)
+  if (!match) return cssVar
+  return getComputedStyle(document.documentElement).getPropertyValue(match[1]).trim()
+}
+
 const option = computed(() => {
   const sorted = [...props.data].reverse()
   let running = 0
@@ -29,7 +35,7 @@ const option = computed(() => {
       type: 'line',
       data: cumulative,
       smooth: true,
-      color: '#6366f1',
+      color: resolveColor('var(--primary)'),
       areaStyle: { opacity: 0.15 },
     }],
     grid: { left: 50, right: 16, top: 48, bottom: 32 },

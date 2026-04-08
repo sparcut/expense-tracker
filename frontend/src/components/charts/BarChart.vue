@@ -12,6 +12,12 @@ use([CanvasRenderer, BarChart, GridComponent, TooltipComponent, TitleComponent])
 const props = defineProps<{ data: { month: string; total: number }[] }>()
 const { isDark } = useTheme()
 
+function resolveColor(cssVar: string): string {
+  const match = cssVar.match(/var\((--[\w-]+)\)/)
+  if (!match) return cssVar
+  return getComputedStyle(document.documentElement).getPropertyValue(match[1]).trim()
+}
+
 const option = computed(() => ({
   title: { text: 'Monthly Spend', textStyle: { fontSize: 13, fontWeight: 600 } },
   tooltip: { trigger: 'axis', valueFormatter: (v: number) => `$${v.toFixed(2)}` },
@@ -25,7 +31,7 @@ const option = computed(() => ({
     type: 'bar',
     data: [...props.data].reverse().map(d => d.total),
     itemStyle: { borderRadius: [4, 4, 0, 0] },
-    color: '#6366f1',
+    color: resolveColor('var(--primary)'),
   }],
   grid: { left: 50, right: 16, top: 48, bottom: 32 },
 }))
