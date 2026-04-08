@@ -100,7 +100,10 @@ const grouped = computed(() => {
     <div v-for="group in grouped" :key="group.key">
       <!-- Day header -->
       <div class="flex items-center justify-between mb-2">
-        <span class="text-sm font-semibold">{{ group.label }}</span>
+        <div class="flex items-center gap-2">
+          <span class="text-sm font-semibold">{{ group.label }}</span>
+          <span class="text-xs text-muted-foreground">{{ group.items.length }} {{ group.items.length === 1 ? 'expense' : 'expenses' }}</span>
+        </div>
         <span class="text-sm text-muted-foreground">${{ group.total.toFixed(2) }}</span>
       </div>
 
