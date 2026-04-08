@@ -29,7 +29,7 @@ function validateExpenseBody(body: Record<string, unknown>): string[] {
   if (!amount || isNaN(amt) || amt <= 0)
     errors.push('amount must be a positive number')
 
-  if (!date || isNaN(new Date(date as string).getTime()))
+  if (!isValidDate(date))
     errors.push('date must be a valid date')
 
   return errors
@@ -119,8 +119,7 @@ export async function getSummary(_req: Request, res: Response) {
     `
 
     res.json({ byCategory, monthly })
-  } catch (e) {
-    console.error('getSummary error:', e)
+  } catch {
     res.status(500).json({ error: 'Failed to fetch summary' })
   }
 }
