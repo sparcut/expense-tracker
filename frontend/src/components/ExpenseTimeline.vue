@@ -112,7 +112,7 @@ const grouped = computed(() => {
             class="flex items-start gap-4 pl-6 relative group"
           >
             <!-- Timeline dot -->
-            <div class="absolute left-0 top-3.5 w-3.5 h-3.5 rounded-full border-2 border-primary bg-background shrink-0" />
+            <div class="absolute left-[7px] top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-primary bg-background shrink-0" />
 
             <!-- Edit mode -->
             <div v-if="editingId === expense.id" class="flex-1">
