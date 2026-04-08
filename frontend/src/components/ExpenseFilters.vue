@@ -19,6 +19,47 @@ function toggleSort(field: SortField) {
   }
 }
 
+function toDateStr(d: Date) {
+  return d.toISOString().slice(0, 10)
+}
+
+const presets = [
+  {
+    label: 'This month',
+    apply() {
+      const now = new Date()
+      startDate.value = toDateStr(new Date(now.getFullYear(), now.getMonth(), 1))
+      endDate.value = toDateStr(new Date(now.getFullYear(), now.getMonth() + 1, 0))
+    },
+  },
+  {
+    label: 'Last month',
+    apply() {
+      const now = new Date()
+      startDate.value = toDateStr(new Date(now.getFullYear(), now.getMonth() - 1, 1))
+      endDate.value = toDateStr(new Date(now.getFullYear(), now.getMonth(), 0))
+    },
+  },
+  {
+    label: 'Last 30 days',
+    apply() {
+      const now = new Date()
+      const from = new Date(now)
+      from.setDate(from.getDate() - 29)
+      startDate.value = toDateStr(from)
+      endDate.value = toDateStr(now)
+    },
+  },
+  {
+    label: 'This year',
+    apply() {
+      const now = new Date()
+      startDate.value = toDateStr(new Date(now.getFullYear(), 0, 1))
+      endDate.value = toDateStr(new Date(now.getFullYear(), 11, 31))
+    },
+  },
+]
+
 const inputClass = 'px-3 py-1.5 rounded-md border border-border bg-card text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors'
 </script>
 
@@ -32,7 +73,18 @@ const inputClass = 'px-3 py-1.5 rounded-md border border-border bg-card text-for
         <option v-for="cat in CATEGORIES" :key="cat" :value="cat">{{ cat }}</option>
       </select>
     </div>
-    <!-- Row 2: date range + sort -->
+    <!-- Row 2: date presets -->
+    <div class="flex flex-wrap gap-2">
+      <button
+        v-for="preset in presets"
+        :key="preset.label"
+        @click="preset.apply()"
+        class="px-3 py-1.5 rounded-md border border-border text-sm text-muted-foreground hover:text-foreground hover:border-primary/50 transition-colors"
+      >
+        {{ preset.label }}
+      </button>
+    </div>
+    <!-- Row 3: date range inputs + sort -->
     <div class="flex flex-wrap items-center gap-2">
       <input v-model="startDate" type="date" :class="inputClass + ' flex-1 min-w-0'" />
       <span class="text-muted-foreground text-sm shrink-0">to</span>
