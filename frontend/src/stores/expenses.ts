@@ -27,9 +27,14 @@ export const useExpenseStore = defineStore('expenses', () => {
     }
   }
 
+  function sortByDate() {
+    expenses.value.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
+  }
+
   async function createExpense(form: ExpenseFormData) {
     const { data } = await api.post<Expense>('/expenses', form)
-    expenses.value.unshift(data)
+    expenses.value.push(data)
+    sortByDate()
     return data
   }
 
@@ -37,6 +42,7 @@ export const useExpenseStore = defineStore('expenses', () => {
     const { data } = await api.put<Expense>(`/expenses/${id}`, form)
     const idx = expenses.value.findIndex((e) => e.id === id)
     if (idx !== -1) expenses.value[idx] = data
+    sortByDate()
     return data
   }
 

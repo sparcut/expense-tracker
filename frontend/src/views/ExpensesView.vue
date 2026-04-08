@@ -3,8 +3,8 @@ import { ref, onMounted } from 'vue'
 import { Plus } from 'lucide-vue-next'
 import { useExpenseStore } from '../stores/expenses'
 import ExpenseForm from '../components/ExpenseForm.vue'
-import CategoryBadge from '../components/CategoryBadge.vue'
 import RecentExpenses from '../components/RecentExpenses.vue'
+import ExpenseTimeline from '../components/ExpenseTimeline.vue'
 import type { ExpenseFormData } from '../types/expense'
 
 const store = useExpenseStore()
@@ -63,22 +63,7 @@ async function handleAdd(data: ExpenseFormData) {
     <p v-else-if="store.error" class="text-destructive">{{ store.error }}</p>
     <p v-else-if="!store.expenses.length" class="text-muted-foreground">No expenses yet.</p>
 
-    <!-- List -->
-    <ul v-else class="space-y-2">
-      <li
-        v-for="expense in store.expenses"
-        :key="expense.id"
-        class="bg-card border border-border rounded-lg px-4 py-3 flex items-center justify-between"
-      >
-        <div>
-          <p class="font-medium">{{ expense.title }}</p>
-          <div class="flex items-center gap-2 mt-1">
-            <CategoryBadge :category="expense.category" />
-            <span class="text-xs text-muted-foreground">{{ new Date(expense.date).toLocaleDateString() }}</span>
-          </div>
-        </div>
-        <span class="font-semibold">${{ expense.amount.toFixed(2) }}</span>
-      </li>
-    </ul>
+    <!-- Timeline -->
+    <ExpenseTimeline v-else :expenses="store.expenses" />
   </div>
 </template>
