@@ -1,9 +1,27 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { ref, computed } from 'vue'
+import { Trash2 } from 'lucide-vue-next'
 import type { Expense } from '../types/expense'
 import CategoryBadge from './CategoryBadge.vue'
+import ConfirmModal from './ConfirmModal.vue'
+import { useExpenseStore } from '../stores/expenses'
 
 const props = defineProps<{ expenses: Expense[] }>()
+
+const store = useExpenseStore()
+const pendingDelete = ref<Expense | null>(null)
+const deleting = ref(false)
+
+async function confirmDelete() {
+  if (!pendingDelete.value) return
+  deleting.value = true
+  try {
+    await store.deleteExpense(pendingDelete.value.id)
+    pendingDelete.value = null
+  } finally {
+    deleting.value = false
+  }
+}
 
 function dayKey(date: string) {
   return new Date(date).toLocaleDateString('en-AU', { year: 'numeric', month: 'long', day: 'numeric' })
@@ -14,16 +32,13 @@ function formatTime(date: string) {
 }
 
 function isToday(date: string) {
-  const d = new Date(date)
-  const now = new Date()
-  return d.toDateString() === now.toDateString()
+  return new Date(date).toDateString() === new Date().toDateString()
 }
 
 function isYesterday(date: string) {
-  const d = new Date(date)
   const yesterday = new Date()
   yesterday.setDate(yesterday.getDate() - 1)
-  return d.toDateString() === yesterday.toDateString()
+  return new Date(date).toDateString() === yesterday.toDateString()
 }
 
 function dayLabel(date: string) {
@@ -59,14 +74,13 @@ const grouped = computed(() => {
 
       <!-- Timeline entries -->
       <div class="relative">
-        <!-- Vertical line -->
         <div class="absolute left-[7px] top-3 bottom-3 w-px bg-border" />
 
         <div class="space-y-1">
           <div
             v-for="expense in group.items"
             :key="expense.id"
-            class="flex items-start gap-4 pl-6 relative"
+            class="flex items-start gap-4 pl-6 relative group"
           >
             <!-- Timeline dot -->
             <div class="absolute left-0 top-3.5 w-3.5 h-3.5 rounded-full border-2 border-primary bg-background shrink-0" />
@@ -80,11 +94,31 @@ const grouped = computed(() => {
                   <span class="text-xs text-muted-foreground">{{ formatTime(expense.date) }}</span>
                 </div>
               </div>
-              <span class="font-semibold text-sm shrink-0">${{ expense.amount.toFixed(2) }}</span>
+
+              <div class="flex items-center gap-3 shrink-0">
+                <span class="font-semibold text-sm">${{ expense.amount.toFixed(2) }}</span>
+                <button
+                  @click="pendingDelete = expense"
+                  class="opacity-0 group-hover:opacity-100 p-1 rounded text-muted-foreground hover:text-destructive transition-all"
+                  title="Delete"
+                >
+                  <Trash2 :size="15" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Confirm modal -->
+  <ConfirmModal
+    v-if="pendingDelete"
+    title="Delete expense"
+    :message="`Delete &quot;${pendingDelete.title}&quot;? This cannot be undone.`"
+    :loading="deleting"
+    @confirm="confirmDelete"
+    @cancel="pendingDelete = null"
+  />
 </template>
