@@ -155,15 +155,17 @@ const grouped = computed(() => {
                     @click="editingId = expense.id"
                     class="p-1 rounded text-muted-foreground hover:text-primary transition-colors"
                     title="Edit"
+                    :aria-label="`Edit ${expense.title}`"
                   >
-                    <Pencil :size="15" />
+                    <Pencil :size="15" aria-hidden="true" />
                   </button>
                   <button
                     @click="pendingDelete = expense"
                     class="p-1 rounded text-muted-foreground hover:text-destructive transition-colors"
                     title="Delete"
+                    :aria-label="`Delete ${expense.title}`"
                   >
-                    <Trash2 :size="15" />
+                    <Trash2 :size="15" aria-hidden="true" />
                   </button>
                 </div>
               </div>

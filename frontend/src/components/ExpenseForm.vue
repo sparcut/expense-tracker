@@ -62,40 +62,40 @@ const errorClass = 'text-destructive text-xs mt-1'
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <!-- Title -->
       <div>
-        <label :class="labelClass">Title <span class="text-destructive">*</span></label>
-        <input v-model="form.title" type="text" placeholder="e.g. Coffee" :class="inputClass" />
-        <p v-if="errors.title" :class="errorClass">{{ errors.title }}</p>
+        <label for="form-title" :class="labelClass">Title <span class="text-destructive" aria-hidden="true">*</span></label>
+        <input id="form-title" v-model="form.title" type="text" placeholder="e.g. Coffee" :class="inputClass" />
+        <p v-if="errors.title" :class="errorClass" role="alert">{{ errors.title }}</p>
       </div>
 
       <!-- Category -->
       <div>
-        <label :class="labelClass">Category <span class="text-destructive">*</span></label>
-        <select v-model="form.category" :class="inputClass">
+        <label for="form-category" :class="labelClass">Category <span class="text-destructive" aria-hidden="true">*</span></label>
+        <select id="form-category" v-model="form.category" :class="inputClass">
           <option value="" disabled>Select category</option>
           <option v-for="cat in CATEGORIES" :key="cat" :value="cat">{{ cat }}</option>
         </select>
-        <p v-if="errors.category" :class="errorClass">{{ errors.category }}</p>
+        <p v-if="errors.category" :class="errorClass" role="alert">{{ errors.category }}</p>
       </div>
 
       <!-- Amount -->
       <div>
-        <label :class="labelClass">Amount <span class="text-destructive">*</span></label>
-        <AmountInput v-model="form.amount" />
-        <p v-if="errors.amount" :class="errorClass">{{ errors.amount }}</p>
+        <label for="form-amount" :class="labelClass">Amount <span class="text-destructive" aria-hidden="true">*</span></label>
+        <AmountInput id="form-amount" v-model="form.amount" />
+        <p v-if="errors.amount" :class="errorClass" role="alert">{{ errors.amount }}</p>
       </div>
 
       <!-- Date & Time -->
       <div>
-        <label :class="labelClass">Date & Time <span class="text-destructive">*</span></label>
-        <input v-model="form.date" type="datetime-local" :class="inputClass" />
-        <p v-if="errors.date" :class="errorClass">{{ errors.date }}</p>
+        <label for="form-date" :class="labelClass">Date & Time <span class="text-destructive" aria-hidden="true">*</span></label>
+        <input id="form-date" v-model="form.date" type="datetime-local" :class="inputClass" />
+        <p v-if="errors.date" :class="errorClass" role="alert">{{ errors.date }}</p>
       </div>
     </div>
 
     <!-- Description -->
     <div>
-      <label :class="labelClass">Description</label>
-      <textarea v-model="form.description" rows="2" placeholder="Optional notes..." :class="inputClass + ' resize-none'" />
+      <label for="form-description" :class="labelClass">Description</label>
+      <textarea id="form-description" v-model="form.description" rows="2" placeholder="Optional notes..." :class="inputClass + ' resize-none'" />
     </div>
 
     <!-- Actions -->
@@ -112,7 +112,7 @@ const errorClass = 'text-destructive text-xs mt-1'
         :disabled="loading"
         class="flex items-center gap-2 px-4 py-2 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-opacity"
       >
-        <Loader2 v-if="loading" :size="14" class="animate-spin" />
+        <Loader2 v-if="loading" :size="14" class="animate-spin" aria-hidden="true" />
         {{ loading ? 'Saving...' : isEditing ? 'Save Changes' : 'Add Expense' }}
       </button>
     </div>

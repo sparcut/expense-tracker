@@ -2,7 +2,7 @@
 import { ref } from 'vue'
 import { Plus, Minus } from 'lucide-vue-next'
 
-const props = defineProps<{ modelValue: number | string }>()
+const props = defineProps<{ modelValue: number | string; id?: string }>()
 const emit = defineEmits<{ 'update:modelValue': [value: number | string] }>()
 
 const inputRef = ref<HTMLInputElement | null>(null)
@@ -31,7 +31,7 @@ const btnClass = 'px-3 flex items-center justify-center text-muted-foreground ho
 
 <template>
   <div class="flex rounded-md border border-border bg-card overflow-hidden focus-within:ring-2 focus-within:ring-ring transition-all">
-    <button type="button" @click="adjust($event, -1)" :class="btnClass" title="Decrease (Shift for -$10)">
+    <button type="button" @click="adjust($event, -1)" :class="btnClass" title="Decrease (Shift for -$10)" aria-label="Decrease amount">
       <Minus :size="14" />
     </button>
 
@@ -39,6 +39,7 @@ const btnClass = 'px-3 flex items-center justify-center text-muted-foreground ho
       <span class="absolute left-2 top-1/2 -translate-y-1/2 text-sm text-muted-foreground">$</span>
       <input
         ref="inputRef"
+        :id="id"
         :value="modelValue"
         type="number"
         min="0"
@@ -51,7 +52,7 @@ const btnClass = 'px-3 flex items-center justify-center text-muted-foreground ho
       />
     </div>
 
-    <button type="button" @click="adjust($event, 1)" :class="btnClass" title="Increase (Shift for +$10)">
+    <button type="button" @click="adjust($event, 1)" :class="btnClass" title="Increase (Shift for +$10)" aria-label="Increase amount">
       <Plus :size="14" />
     </button>
   </div>
