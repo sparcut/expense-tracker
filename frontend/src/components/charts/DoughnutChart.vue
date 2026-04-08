@@ -31,7 +31,7 @@ const option = computed(() => {
       itemStyle: { color: resolveColor(getCategoryColor(d.category)) },
     })),
     label: { show: false },
-    emphasis: { label: { show: true, fontSize: 12, fontWeight: 'bold' } },
+    emphasis: { focus: 'none', label: { show: true, fontSize: 12, fontWeight: 'bold' }, itemStyle: { opacity: 0.85 } },
   }],
   }
 })
