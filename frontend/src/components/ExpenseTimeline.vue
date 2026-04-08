@@ -137,6 +137,7 @@ const grouped = computed(() => {
                   <CategoryBadge :category="expense.category" />
                   <span class="text-xs text-muted-foreground">{{ formatTime(expense.date) }}</span>
                 </div>
+                <p v-if="expense.description" class="text-xs text-muted-foreground mt-1 truncate">{{ expense.description }}</p>
               </div>
 
               <div class="flex items-center gap-3 shrink-0">
