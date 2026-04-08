@@ -1,17 +1,103 @@
 @import "tailwindcss";
 
-@layer base {
-  :root {
-    --radius: 0.5rem;
-  }
+/* Class-based dark mode */
+@variant dark (&:where(.dark, .dark *));
 
+/* ── Design tokens ---
+ * References Tailwind's built-in palette variables.
+ * Components use semantic names — no dark: prefix needed.
+ */
+:root {
+  --background:             var(--color-zinc-50);
+  --foreground:             var(--color-zinc-900);
+
+  --card:                   var(--color-white);
+  --card-foreground:        var(--color-zinc-900);
+
+  --nav:                    var(--color-white);
+  --nav-border:             var(--color-zinc-200);
+
+  --muted:                  var(--color-zinc-100);
+  --muted-foreground:       var(--color-zinc-500);
+
+  --border:                 var(--color-zinc-200);
+
+  --primary:                var(--color-indigo-600);
+  --primary-foreground:     var(--color-white);
+
+  --destructive:            var(--color-red-600);
+  --destructive-foreground: var(--color-white);
+
+  --ring:                   var(--color-indigo-600);
+
+  --radius:                 0.5rem;
+  --transition-speed:       150ms;
+}
+
+.dark {
+  --background:             var(--color-zinc-950);
+  --foreground:             var(--color-zinc-50);
+
+  --card:                   var(--color-zinc-900);
+  --card-foreground:        var(--color-zinc-50);
+
+  --nav:                    var(--color-zinc-900);
+  --nav-border:             var(--color-zinc-800);
+
+  --muted:                  var(--color-zinc-800);
+  --muted-foreground:       var(--color-zinc-400);
+
+  --border:                 var(--color-zinc-700);
+
+  --primary:                var(--color-indigo-400);
+  --primary-foreground:     var(--color-white);
+
+  --destructive:            var(--color-red-500);
+  --destructive-foreground: var(--color-white);
+
+  --ring:                   var(--color-indigo-400);
+}
+
+/* ── Map tokens to Tailwind utilities ---
+ * Generates: bg-background, text-foreground, border-border etc.
+ */
+@theme inline {
+  --color-background:             var(--background);
+  --color-foreground:             var(--foreground);
+  --color-card:                   var(--card);
+  --color-card-foreground:        var(--card-foreground);
+  --color-nav:                    var(--nav);
+  --color-nav-border:             var(--nav-border);
+  --color-muted:                  var(--muted);
+  --color-muted-foreground:       var(--muted-foreground);
+  --color-border:                 var(--border);
+  --color-primary:                var(--primary);
+  --color-primary-foreground:     var(--primary-foreground);
+  --color-destructive:            var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-ring:                   var(--ring);
+}
+
+/* ── Base styles --- */
+@layer base {
   * {
     box-sizing: border-box;
   }
 
+  html {
+    transition: background-color var(--transition-speed) ease,
+                color var(--transition-speed) ease;
+  }
+
   body {
     margin: 0;
+    background-color: var(--background);
+    color: var(--foreground);
     font-family: system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    color: var(--foreground);
   }
 }
