@@ -14,6 +14,7 @@ const props = defineProps<{ data: { month: string; total: number }[] }>()
 const { isDark } = useTheme()
 
 const option = computed(() => {
+  const dark = isDark()
   const sorted = [...props.data].reverse()
   let running = 0
   const cumulative = sorted.map(d => {

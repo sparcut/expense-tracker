@@ -13,7 +13,9 @@ use([CanvasRenderer, BarChart, GridComponent, TooltipComponent, TitleComponent])
 const props = defineProps<{ data: { month: string; total: number }[] }>()
 const { isDark } = useTheme()
 
-const option = computed(() => ({
+const option = computed(() => {
+  const dark = isDark()
+  return {
   title: { text: 'Monthly Spend', textStyle: { fontSize: 13, fontWeight: 600 } },
   tooltip: { trigger: 'axis', valueFormatter: (v: number) => `$${v.toFixed(2)}` },
   xAxis: {
@@ -29,7 +31,8 @@ const option = computed(() => ({
     color: resolveColor('var(--primary)'),
   }],
   grid: { left: 50, right: 16, top: 48, bottom: 32 },
-}))
+  }
+})
 </script>
 
 <template>
