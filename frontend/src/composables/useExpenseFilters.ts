@@ -4,14 +4,15 @@ import type { Expense } from '../types/expense'
 export type SortField = 'date' | 'amount'
 export type SortDir = 'desc' | 'asc'
 
-export function useExpenseFilters(expenses: () => Expense[]) {
-  const search = ref('')
-  const category = ref('')
-  const startDate = ref('')
-  const endDate = ref('')
-  const sortField = ref<SortField>('date')
-  const sortDir = ref<SortDir>('desc')
+// Module-level state — persists across route changes
+const search = ref('')
+const category = ref('')
+const startDate = ref('')
+const endDate = ref('')
+const sortField = ref<SortField>('date')
+const sortDir = ref<SortDir>('desc')
 
+export function useExpenseFilters(expenses: () => Expense[]) {
   const filtered = computed(() => {
     let result = [...expenses()]
 
