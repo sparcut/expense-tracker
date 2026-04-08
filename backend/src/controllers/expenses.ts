@@ -1,13 +1,37 @@
 import { Request, Response } from 'express'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient, Prisma } from '@prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
-import { Prisma } from '@prisma/client'
 
 const adapter = new PrismaPg({ connectionString: process.env['DATABASE_URL']! })
 const prisma = new PrismaClient({ adapter })
 
+const CATEGORIES = [
+  'Food & Drink', 'Transport', 'Housing', 'Entertainment',
+  'Health', 'Shopping', 'Education', 'Other',
+] as const
+
 function isNotFound(e: unknown) {
   return e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2025'
+}
+
+function validateExpenseBody(body: Record<string, unknown>): string[] {
+  const errors: string[] = []
+  const { title, category, amount, date } = body
+
+  if (!title || typeof title !== 'string' || !title.trim())
+    errors.push('title is required')
+
+  if (!category || !CATEGORIES.includes(category as typeof CATEGORIES[number]))
+    errors.push(`category must be one of: ${CATEGORIES.join(', ')}`)
+
+  const amt = parseFloat(amount as string)
+  if (!amount || isNaN(amt) || amt <= 0)
+    errors.push('amount must be a positive number')
+
+  if (!date || isNaN(new Date(date as string).getTime()))
+    errors.push('date must be a valid date')
+
+  return errors
 }
 
 export async function getExpenses(req: Request, res: Response) {
@@ -32,7 +56,7 @@ export async function getExpenses(req: Request, res: Response) {
 
 export async function getExpenseById(req: Request, res: Response) {
   try {
-    const expense = await prisma.expense.findUnique({ where: { id: req.params.id } })
+    const expense = await prisma.expense.findUnique({ where: { id: String(req.params.id) } })
     if (!expense) return res.status(404).json({ error: 'Expense not found' })
     res.json(expense)
   } catch {
@@ -41,10 +65,13 @@ export async function getExpenseById(req: Request, res: Response) {
 }
 
 export async function createExpense(req: Request, res: Response) {
+  const errors = validateExpenseBody(req.body)
+  if (errors.length) return res.status(400).json({ errors })
+
   try {
     const { title, category, amount, date, description } = req.body
     const expense = await prisma.expense.create({
-      data: { title, category, amount: parseFloat(amount), date: new Date(date), description },
+      data: { title: title.trim(), category, amount: parseFloat(amount), date: new Date(date), description: description?.trim() || null },
     })
     res.status(201).json(expense)
   } catch {
@@ -53,11 +80,14 @@ export async function createExpense(req: Request, res: Response) {
 }
 
 export async function updateExpense(req: Request, res: Response) {
+  const errors = validateExpenseBody(req.body)
+  if (errors.length) return res.status(400).json({ errors })
+
   try {
     const { title, category, amount, date, description } = req.body
     const expense = await prisma.expense.update({
-      where: { id: req.params.id },
-      data: { title, category, amount: parseFloat(amount), date: new Date(date), description },
+      where: { id: String(req.params.id) },
+      data: { title: title.trim(), category, amount: parseFloat(amount), date: new Date(date), description: description?.trim() || null },
     })
     res.json(expense)
   } catch (e) {
@@ -68,7 +98,7 @@ export async function updateExpense(req: Request, res: Response) {
 
 export async function deleteExpense(req: Request, res: Response) {
   try {
-    await prisma.expense.delete({ where: { id: req.params.id } })
+    await prisma.expense.delete({ where: { id: String(req.params.id) } })
     res.status(204).send()
   } catch (e) {
     if (isNotFound(e)) return res.status(404).json({ error: 'Expense not found' })
@@ -76,7 +106,7 @@ export async function deleteExpense(req: Request, res: Response) {
   }
 }
 
-export async function getSummary(req: Request, res: Response) {
+export async function getSummary(_req: Request, res: Response) {
   try {
     const byCategory = await prisma.expense.groupBy({
       by: ['category'],
