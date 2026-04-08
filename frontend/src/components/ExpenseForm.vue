@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { reactive, computed } from 'vue'
+import { Loader2 } from 'lucide-vue-next'
 import { CATEGORIES, type ExpenseFormData } from '../types/expense'
 import AmountInput from './AmountInput.vue'
 import { nowLocal } from '../utils/date'
@@ -99,8 +100,9 @@ const errorClass = 'text-destructive text-xs mt-1'
       <button
         type="submit"
         :disabled="loading"
-        class="px-4 py-2 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-opacity"
+        class="flex items-center gap-2 px-4 py-2 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-opacity"
       >
+        <Loader2 v-if="loading" :size="14" class="animate-spin" />
         {{ loading ? 'Saving...' : isEditing ? 'Save Changes' : 'Add Expense' }}
       </button>
     </div>

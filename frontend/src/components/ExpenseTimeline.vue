@@ -112,7 +112,8 @@ const grouped = computed(() => {
           <div
             v-for="expense in group.items"
             :key="expense.id"
-            class="flex items-start gap-4 pl-6 relative group"
+            class="flex items-start gap-4 pl-6 relative group transition-opacity"
+            :class="{ 'opacity-40': pendingDelete?.id === expense.id }"
           >
             <!-- Timeline dot -->
             <div class="absolute left-[7px] top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-2 border-primary bg-background shrink-0" />

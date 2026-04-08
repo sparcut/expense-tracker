@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Loader2 } from 'lucide-vue-next'
+
 defineProps<{
   title: string
   message: string
@@ -17,7 +19,7 @@ const emit = defineEmits<{ confirm: []; cancel: [] }>()
       @click.self="emit('cancel')"
     >
       <!-- Backdrop -->
-      <div class="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+      <div class="absolute inset-0 bg-black/40 backdrop-blur-[1px]" />
 
       <!-- Dialog -->
       <div class="relative z-10 w-full max-w-sm bg-card border border-border rounded-xl shadow-xl p-6">
@@ -35,8 +37,9 @@ const emit = defineEmits<{ confirm: []; cancel: [] }>()
           <button
             @click="emit('confirm')"
             :disabled="loading"
-            class="px-4 py-2 text-sm rounded-md bg-destructive text-destructive-foreground hover:opacity-90 disabled:opacity-50 transition-opacity"
+            class="flex items-center gap-2 px-4 py-2 text-sm rounded-md bg-destructive text-destructive-foreground hover:opacity-90 disabled:opacity-50 transition-opacity"
           >
+            <Loader2 v-if="loading" :size="14" class="animate-spin" />
             {{ loading ? 'Deleting...' : (confirmLabel ?? 'Delete') }}
           </button>
         </div>
