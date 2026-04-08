@@ -1,20 +1,22 @@
+import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
-import type { Expense } from '../types/expense'
+import { useExpenseStore } from './expenses'
 
 export type SortField = 'date' | 'amount'
 export type SortDir = 'desc' | 'asc'
 
-// Module-level state — persists across route changes
-const search = ref('')
-const category = ref('')
-const startDate = ref('')
-const endDate = ref('')
-const sortField = ref<SortField>('date')
-const sortDir = ref<SortDir>('desc')
+export const useFilterStore = defineStore('filters', () => {
+  const search = ref('')
+  const category = ref('')
+  const startDate = ref('')
+  const endDate = ref('')
+  const sortField = ref<SortField>('date')
+  const sortDir = ref<SortDir>('desc')
 
-export function useExpenseFilters(expenses: () => Expense[]) {
+  const expenseStore = useExpenseStore()
+
   const filtered = computed(() => {
-    let result = [...expenses()]
+    let result = [...expenseStore.expenses]
 
     if (search.value.trim()) {
       const q = search.value.toLowerCase()
@@ -59,4 +61,4 @@ export function useExpenseFilters(expenses: () => Expense[]) {
   }
 
   return { search, category, startDate, endDate, sortField, sortDir, filtered, isFiltered, reset }
-}
+})

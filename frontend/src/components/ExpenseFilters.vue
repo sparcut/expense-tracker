@@ -1,21 +1,17 @@
 <script setup lang="ts">
 import { ArrowUpDown } from 'lucide-vue-next'
 import { CATEGORIES } from '../types/expense'
-import type { SortField, SortDir } from '../composables/useExpenseFilters'
+import { useFilterStore } from '../stores/filters'
+import type { SortField } from '../stores/filters'
 
-const search = defineModel<string>('search', { default: '' })
-const category = defineModel<string>('category', { default: '' })
-const startDate = defineModel<string>('startDate', { default: '' })
-const endDate = defineModel<string>('endDate', { default: '' })
-const sortField = defineModel<SortField>('sortField', { default: 'date' })
-const sortDir = defineModel<SortDir>('sortDir', { default: 'desc' })
+const filters = useFilterStore()
 
 function toggleSort(field: SortField) {
-  if (sortField.value === field) {
-    sortDir.value = sortDir.value === 'desc' ? 'asc' : 'desc'
+  if (filters.sortField === field) {
+    filters.sortDir = filters.sortDir === 'desc' ? 'asc' : 'desc'
   } else {
-    sortField.value = field
-    sortDir.value = 'desc'
+    filters.sortField = field
+    filters.sortDir = 'desc'
   }
 }
 
@@ -28,16 +24,16 @@ const presets = [
     label: 'This month',
     apply() {
       const now = new Date()
-      startDate.value = toDateStr(new Date(now.getFullYear(), now.getMonth(), 1))
-      endDate.value = toDateStr(new Date(now.getFullYear(), now.getMonth() + 1, 0))
+      filters.startDate = toDateStr(new Date(now.getFullYear(), now.getMonth(), 1))
+      filters.endDate = toDateStr(new Date(now.getFullYear(), now.getMonth() + 1, 0))
     },
   },
   {
     label: 'Last month',
     apply() {
       const now = new Date()
-      startDate.value = toDateStr(new Date(now.getFullYear(), now.getMonth() - 1, 1))
-      endDate.value = toDateStr(new Date(now.getFullYear(), now.getMonth(), 0))
+      filters.startDate = toDateStr(new Date(now.getFullYear(), now.getMonth() - 1, 1))
+      filters.endDate = toDateStr(new Date(now.getFullYear(), now.getMonth(), 0))
     },
   },
   {
@@ -46,16 +42,16 @@ const presets = [
       const now = new Date()
       const from = new Date(now)
       from.setDate(from.getDate() - 29)
-      startDate.value = toDateStr(from)
-      endDate.value = toDateStr(now)
+      filters.startDate = toDateStr(from)
+      filters.endDate = toDateStr(now)
     },
   },
   {
     label: 'This year',
     apply() {
       const now = new Date()
-      startDate.value = toDateStr(new Date(now.getFullYear(), 0, 1))
-      endDate.value = toDateStr(new Date(now.getFullYear(), 11, 31))
+      filters.startDate = toDateStr(new Date(now.getFullYear(), 0, 1))
+      filters.endDate = toDateStr(new Date(now.getFullYear(), 11, 31))
     },
   },
 ]
@@ -67,8 +63,8 @@ const inputClass = 'px-3 py-1.5 rounded-md border border-border bg-card text-for
   <div class="p-4 bg-card border border-border rounded-lg space-y-2">
     <!-- Row 1: search + category -->
     <div class="flex flex-wrap gap-2">
-      <input v-model="search" type="text" placeholder="Search..." :class="inputClass + ' flex-1 min-w-0'" />
-      <select v-model="category" :class="inputClass + ' flex-1 min-w-0'">
+      <input v-model="filters.search" type="text" placeholder="Search..." :class="inputClass + ' flex-1 min-w-0'" />
+      <select v-model="filters.category" :class="inputClass + ' flex-1 min-w-0'">
         <option value="">All categories</option>
         <option v-for="cat in CATEGORIES" :key="cat" :value="cat">{{ cat }}</option>
       </select>
@@ -86,14 +82,14 @@ const inputClass = 'px-3 py-1.5 rounded-md border border-border bg-card text-for
     </div>
     <!-- Row 3: date range inputs + sort -->
     <div class="flex flex-wrap items-center gap-2">
-      <input v-model="startDate" type="date" :class="inputClass + ' flex-1 min-w-0'" />
+      <input v-model="filters.startDate" type="date" :class="inputClass + ' flex-1 min-w-0'" />
       <span class="text-muted-foreground text-sm shrink-0">to</span>
-      <input v-model="endDate" type="date" :class="inputClass + ' flex-1 min-w-0'" />
-      <button @click="toggleSort('date')" :class="['flex items-center gap-1 px-3 py-1.5 rounded-md border text-sm transition-colors shrink-0', sortField === 'date' ? 'border-primary text-primary bg-primary/10' : 'border-border text-muted-foreground hover:text-foreground']">
-        <ArrowUpDown :size="13" /> Date {{ sortField === 'date' ? (sortDir === 'desc' ? '↓' : '↑') : '' }}
+      <input v-model="filters.endDate" type="date" :class="inputClass + ' flex-1 min-w-0'" />
+      <button @click="toggleSort('date')" :class="['flex items-center gap-1 px-3 py-1.5 rounded-md border text-sm transition-colors shrink-0', filters.sortField === 'date' ? 'border-primary text-primary bg-primary/10' : 'border-border text-muted-foreground hover:text-foreground']">
+        <ArrowUpDown :size="13" /> Date {{ filters.sortField === 'date' ? (filters.sortDir === 'desc' ? '↓' : '↑') : '' }}
       </button>
-      <button @click="toggleSort('amount')" :class="['flex items-center gap-1 px-3 py-1.5 rounded-md border text-sm transition-colors shrink-0', sortField === 'amount' ? 'border-primary text-primary bg-primary/10' : 'border-border text-muted-foreground hover:text-foreground']">
-        <ArrowUpDown :size="13" /> Amount {{ sortField === 'amount' ? (sortDir === 'desc' ? '↓' : '↑') : '' }}
+      <button @click="toggleSort('amount')" :class="['flex items-center gap-1 px-3 py-1.5 rounded-md border text-sm transition-colors shrink-0', filters.sortField === 'amount' ? 'border-primary text-primary bg-primary/10' : 'border-border text-muted-foreground hover:text-foreground']">
+        <ArrowUpDown :size="13" /> Amount {{ filters.sortField === 'amount' ? (filters.sortDir === 'desc' ? '↓' : '↑') : '' }}
       </button>
     </div>
   </div>
