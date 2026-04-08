@@ -16,6 +16,7 @@ const props = defineProps<{ data: { category: string; _sum: { amount: number } }
 const { isDark } = useTheme()
 
 const option = computed(() => ({
+  backgroundColor: 'transparent',
   title: { text: 'By Category', textStyle: { fontSize: 13, fontWeight: 600 }, top: 0 },
   tooltip: { trigger: 'item', valueFormatter: (v: number) => formatCurrency(v) },
   legend: {

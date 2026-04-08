@@ -15,6 +15,7 @@ const props = defineProps<{ data: { month: string; total: number }[] }>()
 const { isDark } = useTheme()
 
 const option = computed(() => ({
+  backgroundColor: 'transparent',
   title: { text: 'Monthly Spend', textStyle: { fontSize: 13, fontWeight: 600 } },
   tooltip: { trigger: 'axis', valueFormatter: (v: number) => formatCurrency(v) },
   xAxis: {
