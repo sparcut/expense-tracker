@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import { Trash2 } from 'lucide-vue-next'
-import type { Expense } from '../types/expense'
+import { Trash2, Pencil } from 'lucide-vue-next'
+import type { Expense, ExpenseFormData } from '../types/expense'
 import CategoryBadge from './CategoryBadge.vue'
 import ConfirmModal from './ConfirmModal.vue'
+import ExpenseForm from './ExpenseForm.vue'
 import { useExpenseStore } from '../stores/expenses'
 
 const props = defineProps<{ expenses: Expense[] }>()
@@ -11,6 +12,8 @@ const props = defineProps<{ expenses: Expense[] }>()
 const store = useExpenseStore()
 const pendingDelete = ref<Expense | null>(null)
 const deleting = ref(false)
+const editingId = ref<string | null>(null)
+const saving = ref(false)
 
 async function confirmDelete() {
   if (!pendingDelete.value) return
@@ -20,6 +23,32 @@ async function confirmDelete() {
     pendingDelete.value = null
   } finally {
     deleting.value = false
+  }
+}
+
+async function handleEdit(id: string, data: ExpenseFormData) {
+  saving.value = true
+  try {
+    await store.updateExpense(id, data)
+    editingId.value = null
+  } finally {
+    saving.value = false
+  }
+}
+
+function toLocalDatetime(date: string) {
+  const d = new Date(date)
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset())
+  return d.toISOString().slice(0, 16)
+}
+
+function toFormData(expense: Expense): ExpenseFormData {
+  return {
+    title: expense.title,
+    category: expense.category,
+    amount: expense.amount,
+    date: toLocalDatetime(expense.date),
+    description: expense.description ?? '',
   }
 }
 
@@ -85,8 +114,18 @@ const grouped = computed(() => {
             <!-- Timeline dot -->
             <div class="absolute left-0 top-3.5 w-3.5 h-3.5 rounded-full border-2 border-primary bg-background shrink-0" />
 
-            <!-- Expense row -->
-            <div class="flex-1 bg-card border border-border rounded-lg px-4 py-3 flex items-center justify-between gap-4">
+            <!-- Edit mode -->
+            <div v-if="editingId === expense.id" class="flex-1">
+              <ExpenseForm
+                :initial="toFormData(expense)"
+                :loading="saving"
+                @submit="handleEdit(expense.id, $event)"
+                @cancel="editingId = null"
+              />
+            </div>
+
+            <!-- Display mode -->
+            <div v-else class="flex-1 bg-card border border-border rounded-lg px-4 py-3 flex items-center justify-between gap-4">
               <div class="min-w-0">
                 <p class="font-medium text-sm truncate">{{ expense.title }}</p>
                 <div class="flex items-center gap-2 mt-1">
@@ -97,13 +136,22 @@ const grouped = computed(() => {
 
               <div class="flex items-center gap-3 shrink-0">
                 <span class="font-semibold text-sm">${{ expense.amount.toFixed(2) }}</span>
-                <button
-                  @click="pendingDelete = expense"
-                  class="opacity-0 group-hover:opacity-100 p-1 rounded text-muted-foreground hover:text-destructive transition-all"
-                  title="Delete"
-                >
-                  <Trash2 :size="15" />
-                </button>
+                <div class="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <button
+                    @click="editingId = expense.id"
+                    class="p-1 rounded text-muted-foreground hover:text-primary transition-colors"
+                    title="Edit"
+                  >
+                    <Pencil :size="15" />
+                  </button>
+                  <button
+                    @click="pendingDelete = expense"
+                    class="p-1 rounded text-muted-foreground hover:text-destructive transition-colors"
+                    title="Delete"
+                  >
+                    <Trash2 :size="15" />
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -112,7 +160,6 @@ const grouped = computed(() => {
     </div>
   </div>
 
-  <!-- Confirm modal -->
   <ConfirmModal
     v-if="pendingDelete"
     title="Delete expense"

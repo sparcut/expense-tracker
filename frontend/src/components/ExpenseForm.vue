@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive } from 'vue'
+import { reactive, computed } from 'vue'
 import { CATEGORIES, type ExpenseFormData } from '../types/expense'
 import AmountInput from './AmountInput.vue'
 
@@ -9,6 +9,8 @@ const props = withDefaults(defineProps<{
 }>(), {
   loading: false,
 })
+
+const isEditing = computed(() => !!props.initial?.title)
 
 const emit = defineEmits<{
   submit: [data: ExpenseFormData]
@@ -104,7 +106,7 @@ const errorClass = 'text-destructive text-xs mt-1'
         :disabled="loading"
         class="px-4 py-2 text-sm rounded-md bg-primary text-primary-foreground hover:opacity-90 disabled:opacity-50 transition-opacity"
       >
-        {{ loading ? 'Saving...' : 'Add Expense' }}
+        {{ loading ? 'Saving...' : isEditing ? 'Save Changes' : 'Add Expense' }}
       </button>
     </div>
   </form>
